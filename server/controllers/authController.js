@@ -55,11 +55,11 @@ const userLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: existingUser._id, email: existingUser.email ,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "10d" }
-    );
+  { id: existingUser._id, itemType: existingUser.itemType /* ou __t */ },
+  process.env.JWT_SECRET,
+  { expiresIn: '1h' }
+);
+
 
     // On retire le mot de passe du retour
     const userToReturn = existingUser.toObject();
