@@ -66,7 +66,7 @@ function Login() {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-600 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-indigo-50 px-4">
       <ToastContainer />
       
       {/* Modifié: max-w-xs -> max-w-sm pour augmenter la largeur */}
