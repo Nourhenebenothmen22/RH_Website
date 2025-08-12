@@ -40,6 +40,8 @@ const authRouter = require('./routes/auth');
 app.use('/api/auth', authRouter);
 const adminRouter= require('./routes/admin');
 app.use('/api/admin', adminRouter);
+const employeeRouter = require('./routes/employee');
+app.use('/api/employee', employeeRouter);
 
 // ========================
 // 5. Connexion DB & Lancement serveur
