@@ -16,37 +16,27 @@ function Login() {
     setIsLoading(true);
     
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {email, password});
-      
-      // Stocker le token et les informations utilisateur
-      localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('userDiscriminator', response.data.discriminator);
-      localStorage.setItem('userItemType', response.data.itemType);
-      localStorage.setItem('userName', response.data.name);
-      
-      // Notification de succès
-      toast.success("Connexion réussie! Redirection en cours...", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        onClose: () => {
-          // Redirection en fonction du discriminator et itemType
-          if (response.data.discriminator === 'Admin' || response.data.itemType === 'Admin') {
-            navigate('/admin-dashboard');
-          } else if (response.data.discriminator === 'Employee' || response.data.itemType === 'Employee') {
-            navigate('/employee-dashboard');
-          } else {
-            // Redirection par défaut si aucune correspondance
-            navigate('/default-dashboard');
-          }
-        }
-      });
-      
-    } catch (error) {
+  const response = await axios.post('http://localhost:5000/api/auth/login', {email, password});
+  const user = response.data.user; // Accéder aux données utilisateur
+  
+  // Stockage correct dans localStorage
+  localStorage.setItem('authToken', response.data.token);
+  localStorage.setItem('userItemType', user.itemtype); // 'itemtype' avec 't' minuscule
+  localStorage.setItem('userName', user.name);
+  
+  toast.success("Connexion réussie! Redirection en cours...", {
+    onClose: () => {
+      // Redirection basée sur itemtype
+      if (user.itemtype === 'Admin') {
+        navigate('/admin-dashboard');
+      } else if (user.itemtype === 'Employee') {
+        navigate('/employee-dashboard');
+      } else {
+        navigate('/default-dashboard');
+      }
+    }
+  });
+} catch (error) {
       console.error("Erreur lors de la connexion :", error);
       
       let errorMessage = "Erreur lors de la connexion";
