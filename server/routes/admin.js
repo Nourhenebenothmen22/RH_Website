@@ -10,6 +10,10 @@ const {
     countAllAdminsGrouped,
     countAdminsByContinent
 } = require('../controllers/adminController');
+const {verifyToken, verifyTokenAdmin} = require('../Middlewares/authMiddleware');
+
+// Sécurisation de toutes les routes admin
+router.use(verifyToken, verifyTokenAdmin);
 
 // @desc Get all admins
 router.get('/', getAdmin);
@@ -31,6 +35,7 @@ router.get('/count/permission/:permissionLevel', countAdminsByPermission);
 
 // @desc Count admins grouped by permission level
 router.get('/count/grouped/all', countAllAdminsGrouped);
+
 // @desc Count admins by continent
 router.get('/count/continent', countAdminsByContinent);
 
