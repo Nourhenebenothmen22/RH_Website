@@ -38,6 +38,8 @@ app.use(
 // ========================
 const authRouter = require('./routes/auth');
 app.use('/api/auth', authRouter);
+const adminRouter= require('./routes/admin');
+app.use('/api/admin', adminRouter);
 
 // ========================
 // 5. Connexion DB & Lancement serveur
