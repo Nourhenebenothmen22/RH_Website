@@ -7,7 +7,8 @@ const {
     deleteAdmin,
     getAdminById,
     countAdminsByPermission,
-    countAllAdminsGrouped
+    countAllAdminsGrouped,
+    countAdminsByContinent
 } = require('../controllers/adminController');
 
 // @desc Get all admins
@@ -30,5 +31,7 @@ router.get('/count/permission/:permissionLevel', countAdminsByPermission);
 
 // @desc Count admins grouped by permission level
 router.get('/count/grouped/all', countAllAdminsGrouped);
+// @desc Count admins by continent
+router.get('/count/continent', countAdminsByContinent);
 
 module.exports = router;
