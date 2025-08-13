@@ -1,26 +1,54 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import DefaultDashboard from './pages/DefaultDashboard';
-
+import ProtectedRoute from './components/ProtectedRoute'; // Importez le ProtectedRoute
 
 export default function App() {
   return (
-   <BrowserRouter>
-     <Routes>
-         <Route path="/" element={<Navigate to="admin-dashboard" />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />}></Route>
-          <Route path="/employee-dashboard" element={<EmployeeDashboard />}></Route>
-          <Route path="/default-dashboard" element={<DefaultDashboard />}></Route>
-
-          {/* Add more routes as needed */}
-
-     </Routes>
-   </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        {/* Redirection de la racine */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Routes publiques */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* Routes protégées */}
+        <Route 
+          path="/admin-dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/employee-dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['employee']}>
+              <EmployeeDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/default-dashboard" 
+          element={
+            <ProtectedRoute>
+              <DefaultDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Gestion des routes inconnues */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
