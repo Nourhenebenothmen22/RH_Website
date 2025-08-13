@@ -2,7 +2,8 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-export const AuthContext = createContext();
+// Exportez le contexte comme propriété du Provider
+const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -12,6 +13,7 @@ export default function AuthProvider({ children }) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userItemType');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail'); // Ajouté pour cohérence
     setUser(null);
   }, []);
 
@@ -55,6 +57,7 @@ export default function AuthProvider({ children }) {
     localStorage.setItem('authToken', token);
     localStorage.setItem('userItemType', userData.itemtype);
     localStorage.setItem('userName', userData.name);
+    localStorage.setItem('userEmail', userData.email);
     
     setUser({
       token,
@@ -82,3 +85,6 @@ export default function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+// Exportez le contexte séparément
+export { AuthContext };
