@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from "../hooks/useAuth";
@@ -8,6 +8,8 @@ import { useAuth } from "../hooks/useAuth";
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+   const location = useLocation();
+  const error = location.state?.error; // Récupération de l'erreur
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +100,12 @@ function Login() {
           </h1>
           <p className="text-gray-500 text-center text-sm">Connectez-vous à votre espace sécurisé</p>
         </div>
+        {/* Affichage des erreurs */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-1">
