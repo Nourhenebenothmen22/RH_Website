@@ -5,7 +5,8 @@ import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import DefaultDashboard from './pages/DefaultDashboard';
-import ProtectedRoute from './components/ProtectedRoute'; // Importez le ProtectedRoute
+import ProtectedRoute from './components/ProtectedRoute';
+import Unauthorized from './pages/Unauthorized'; // Créez cette page
 
 export default function App() {
   return (
@@ -17,8 +18,9 @@ export default function App() {
         {/* Routes publiques */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
         
-        {/* Routes protégées */}
+        {/* Routes protégées avec contrôle strict */}
         <Route 
           path="/admin-dashboard" 
           element={
@@ -40,7 +42,7 @@ export default function App() {
         <Route 
           path="/default-dashboard" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['default']}>
               <DefaultDashboard />
             </ProtectedRoute>
           } 
