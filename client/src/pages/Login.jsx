@@ -3,9 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from "../hooks/useAuth";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -16,27 +18,41 @@ function Login() {
     setIsLoading(true);
     
     try {
-  const response = await axios.post('http://localhost:5000/api/auth/login', {email, password});
-  const user = response.data.user; // Accéder aux données utilisateur
-  
-  // Stockage correct dans localStorage
-  localStorage.setItem('authToken', response.data.token);
-  localStorage.setItem('userItemType', user.itemtype); // 'itemtype' avec 't' minuscule
-  localStorage.setItem('userName', user.name);
-  
-  toast.success("Connexion réussie! Redirection en cours...", {
-    onClose: () => {
-      // Redirection basée sur itemtype
-      if (user.itemtype === 'Admin') {
-        navigate('/admin-dashboard');
-      } else if (user.itemtype === 'Employee') {
-        navigate('/employee-dashboard');
-      } else {
-        navigate('/default-dashboard');
-      }
-    }
-  });
-} catch (error) {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {email, password});
+      const user = response.data.user;
+      
+      // Utilisez la fonction login du contexte
+      login(response.data.token, {
+        itemtype: user.itemtype,
+        name: user.name,
+        email: user.email,
+        id: user.id || user._id
+      });
+      
+      // Afficher le toast de succès
+      toast.success("Connexion réussie! Redirection en cours...", {
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Redirection après un court délai
+      setTimeout(() => {
+        const userType = user?.itemtype?.toLowerCase();
+        
+        // Tableau de correspondance des routes
+        const routeMap = {
+          'admin': '/admin-dashboard',
+          'employee': '/employee-dashboard'
+        };
+
+        // Redirection basée sur le type ou défaut si manquant/inconnu
+        navigate(routeMap[userType] || '/default-dashboard');
+        
+      }, 2000);
+    } catch (error) {
       console.error("Erreur lors de la connexion :", error);
       
       let errorMessage = "Erreur lors de la connexion";
@@ -69,9 +85,7 @@ function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-indigo-50 px-4">
       <ToastContainer />
       
-      {/* Modifié: max-w-xs -> max-w-sm pour augmenter la largeur */}
       <div className="bg-white shadow-2xl rounded-2xl p-6 w-full max-w-sm transform transition-all duration-300 hover:scale-[1.02]">
-        {/* En-tête avec icône animée */}
         <div className="flex flex-col items-center mb-5">
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-full shadow-md mb-3 animate-bounce-slow">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,9 +99,7 @@ function Login() {
           <p className="text-gray-500 text-center text-sm">Connectez-vous à votre espace sécurisé</p>
         </div>
 
-        {/* Formulaire amélioré */}
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Champ Email avec icône moderne */}
           <div className="space-y-1">
             <label htmlFor="email" className="block font-medium text-gray-700 text-sm">
               Email
@@ -110,7 +122,6 @@ function Login() {
             </div>
           </div>
 
-          {/* Champ Mot de passe avec icône et bouton "show" */}
           <div className="space-y-1">
             <div className="flex justify-between items-center">
               <label htmlFor="password" className="block font-medium text-gray-700 text-sm">
@@ -154,7 +165,6 @@ function Login() {
             </div>
           </div>
 
-          {/* Bouton avec effet dégradé */}
           <button
             type="submit"
             disabled={isLoading}
@@ -176,7 +186,6 @@ function Login() {
           </button>
         </form>
 
-        {/* Séparateur */}
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
@@ -186,7 +195,6 @@ function Login() {
           </div>
         </div>
 
-        {/* Bouton d'inscription */}
         <button 
           onClick={() => navigate('/register')}
           className="flex items-center justify-center w-full border border-blue-500 text-blue-500 hover:bg-blue-50 font-medium py-2.5 text-sm rounded-lg transition-all duration-300"
@@ -197,7 +205,6 @@ function Login() {
           </svg>
         </button>
 
-        {/* Mentions légales */}
         <p className="mt-5 text-center text-[10px] text-gray-500 leading-tight">
           En vous connectant, vous acceptez nos <a href="#" className="text-blue-500 hover:underline">Conditions</a> et notre <a href="#" className="text-blue-500 hover:underline">Politique</a>.
         </p>
