@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const Admin = require('../models/admin');
+const Employee = require('../models/employee');
 
 // Enregistrement utilisateur
 const userRegister = async (req, res) => {
@@ -79,4 +81,51 @@ const userLogin = async (req, res) => {
   }
 };
 
-module.exports ={userRegister, userLogin};
+const validateToken = async (req, res) => {
+  try {
+    const { id, itemtype } = req.user;
+    if (!id || !itemtype) {
+      return res.status(400).json({ message: 'Token invalide' });
+    }
+
+    let user;
+    switch (itemtype.toLowerCase()) {
+      case 'admin':
+        user = await Admin.findById(id);
+        break;
+      case 'employee':
+        user = await Employee.findById(id);
+        break;
+      case 'user':
+        user = await User.findById(id);
+        break;
+      default:
+        return res.status(400).json({ message: 'Type utilisateur invalide' });
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Formatage cohérent avec les autres endpoints
+    const userData = user.toObject();
+    delete userData.password;
+
+    res.json({
+      message: 'Token valide',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        itemtype: user.itemtype || 'user'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Erreur serveur',
+      error: process.env.NODE_ENV === "development" ? error.message : undefined
+    });
+  }
+};
+
+module.exports ={userRegister, userLogin,validateToken};
