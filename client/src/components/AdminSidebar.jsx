@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { 
   FaTachometerAlt, 
   FaBuilding, 
@@ -12,6 +12,11 @@ import { useAuth } from '../hooks/useAuth';
 
 function AdminSidebar() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  // Vérifie si le tableau de bord est actif en fonction de l'URL
+  const isDashboardActive = location.pathname.startsWith('/admin-dashboard') && 
+                           !location.pathname.includes('/admin-dashboard/');
 
   return (
     <div className="fixed top-0 left-0 h-screen z-50 
@@ -34,7 +39,7 @@ function AdminSidebar() {
           to="/admin-dashboard" 
           className={({ isActive }) => 
             `flex items-center p-3 my-1 rounded-lg transition-all duration-300
-            ${isActive 
+            ${isDashboardActive 
               ? 'bg-blue-100 text-blue-600 shadow-md' 
               : 'text-blue-50 hover:bg-blue-500 hover:bg-opacity-50'}`
           }
@@ -70,7 +75,7 @@ function AdminSidebar() {
         </NavLink>
         
         <NavLink 
-          to="/admin-dashboard" 
+          to="/admin-dashboard/payroll" 
           className={({ isActive }) => 
             `flex items-center p-3 my-1 rounded-lg transition-all duration-300
             ${isActive 
@@ -83,7 +88,7 @@ function AdminSidebar() {
         </NavLink>
         
         <NavLink 
-          to="/settings" 
+          to="/admin-dashboard/settings" 
           className={({ isActive }) => 
             `flex items-center p-3 my-1 rounded-lg transition-all duration-300
             ${isActive 
