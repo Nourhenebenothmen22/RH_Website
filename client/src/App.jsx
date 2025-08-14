@@ -6,29 +6,33 @@ import AdminDashboard from './pages/AdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import DefaultDashboard from './pages/DefaultDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Unauthorized from './pages/Unauthorized'; // Créez cette page
+import Unauthorized from './pages/Unauthorized'; 
+import AdminSummary from './components/AdminSummary';
+import DepartementList from './components/departemt/DepartementList';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Redirection de la racine */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        
-        {/* Routes publiques */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
-        {/* Routes protégées avec contrôle strict */}
+        {/* Route admin avec layout */}
         <Route 
           path="/admin-dashboard" 
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
             </ProtectedRoute>
-          } 
-        />
+          }
+        >
+          {/* Sous-routes */}
+          <Route index element={<AdminSummary />} />
+          <Route path='/admin-dashboard/departements' element={<DepartementList />} />
+          <Route path='/admin-dashboard/employees' element={<AdminSummary />} />
+        </Route>
         
         <Route 
           path="/employee-dashboard" 
@@ -48,7 +52,6 @@ export default function App() {
           } 
         />
         
-        {/* Gestion des routes inconnues */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
