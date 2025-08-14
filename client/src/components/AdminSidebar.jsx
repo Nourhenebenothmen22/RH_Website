@@ -48,18 +48,18 @@ function AdminSidebar() {
           <span className="ml-3">Dashboard</span>
         </NavLink>
         
-        <NavLink 
-          to="/admin-dashboard/departements" 
-          className={({ isActive }) => 
-            `flex items-center p-3 my-1 rounded-lg transition-all duration-300
-            ${isActive 
-              ? 'bg-blue-100 text-blue-600 shadow-md' 
-              : 'text-blue-50 hover:bg-blue-500 hover:bg-opacity-50'}`
-          }
-        >
-          <FaBuilding className="text-lg" />
-          <span className="ml-3">Départements</span>
-        </NavLink>
+       <NavLink 
+  to="departements" // CORRECTION : Chemin relatif
+  className={({ isActive }) => 
+    `flex items-center p-3 my-1 rounded-lg transition-all duration-300
+    ${isActive 
+      ? 'bg-blue-100 text-blue-600 shadow-md' 
+      : 'text-blue-50 hover:bg-blue-500 hover:bg-opacity-50'}`
+  }
+>
+  <FaBuilding className="text-lg" />
+  <span className="ml-3">Départements</span>
+</NavLink>
         
         <NavLink 
           to="/admin-dashboard/employees" 
