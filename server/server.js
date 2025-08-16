@@ -42,6 +42,8 @@ const adminRouter= require('./routes/admin');
 app.use('/api/admin', adminRouter);
 const employeeRouter = require('./routes/employee');
 app.use('/api/employee', employeeRouter);
+const departmentRouter = require('./routes/departement');
+app.use('/api/department', departmentRouter);
 
 // ========================
 // 5. Connexion DB & Lancement serveur
