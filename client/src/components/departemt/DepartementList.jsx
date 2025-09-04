@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
@@ -10,6 +10,7 @@ function DepartmentList() {
   const [toastMessage, setToastMessage] = useState('');
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state?.showToast) {
@@ -36,7 +37,7 @@ function DepartmentList() {
             dep_name: dep.dep_name,
             action: (
               <div className="flex space-x-2">
-                <button className="text-blue-600 hover:text-blue-900">
+                <button className="text-blue-600 hover:text-blue-900" onClick={() => navigate(`/admin-dashboard/edit-department/${dep._id}`)}>
                   <FaEdit />
                 </button>
                 <button className="text-red-600 hover:text-red-900">
