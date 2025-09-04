@@ -10,11 +10,16 @@ const employeeSchema = new mongoose.Schema({
     default: 'active'
   },
   // Ajout du champ department
-  department: {
-    type: String,
-    required: true,
-    enum: ['IT', 'HR', 'Finance', 'Marketing', 'Operations'] // Exemples de départements
-  }
+department: {
+  type: String,
+  required: true,
+  enum: [
+    'IT', 'HR', 'Finance', 'Marketing', 'Operations',
+    'Sales', 'Customer Support', 'R&D', 'Legal', 
+    'Procurement', 'Administration', 'Quality Assurance',
+    'Logistics', 'Facilities'
+  ]
+}
 });
 
 User.discriminator('Employee', employeeSchema);
