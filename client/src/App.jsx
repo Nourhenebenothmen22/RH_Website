@@ -1,14 +1,15 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import AdminDashboard from './pages/AdminDashboard';
-import EmployeeDashboard from './pages/EmployeeDashboard';
-import DefaultDashboard from './pages/DefaultDashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import Unauthorized from './pages/Unauthorized'; 
-import AdminSummary from './components/AdminSummary';
-import DepartementList from './components/departemt/DepartementList';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
+import DefaultDashboard from "./pages/DefaultDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Unauthorized from "./pages/Unauthorized";
+import AdminSummary from "./components/AdminSummary";
+import DepartementList from "./components/departemt/DepartementList";
+import AddDepartment from "./components/departemt/AddDepartement";
 
 export default function App() {
   return (
@@ -18,40 +19,41 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        
-        {/* Route admin avec layout */}
-        <Route 
-          path="/admin-dashboard" 
+
+        <Route
+          path="/admin-dashboard"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
             </ProtectedRoute>
           }
         >
-          {/* Sous-routes */}
           <Route index element={<AdminSummary />} />
-          <Route path='/admin-dashboard/departements' element={<DepartementList />} />
-          <Route path='/admin-dashboard/employees' element={<AdminSummary />} />
+          <Route
+            path="departements"
+            element={<DepartementList />} // Déplacement ici
+          />
+          <Route path="add-department" element={<AddDepartment />} />
         </Route>
-        
-        <Route 
-          path="/employee-dashboard" 
+
+        <Route
+          path="/employee-dashboard"
           element={
-            <ProtectedRoute allowedRoles={['employee']}>
+            <ProtectedRoute allowedRoles={["employee"]}>
               <EmployeeDashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/default-dashboard" 
+
+        <Route
+          path="/default-dashboard"
           element={
-            <ProtectedRoute allowedRoles={['default']}>
+            <ProtectedRoute allowedRoles={["default"]}>
               <DefaultDashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        
+
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
