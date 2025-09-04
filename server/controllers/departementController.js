@@ -1,4 +1,4 @@
-const Department = require('../models/departement');
+const Department = require("../models/departement");
 
 // Correction : utiliser ':' au lieu de '=' pour les méthodes d'objet
 module.exports = {
@@ -6,16 +6,30 @@ module.exports = {
     const { dep_name, description } = req.body;
 
     if (!dep_name || !description) {
-      return res.status(400).json({ error: 'Tous les champs sont requis' });
+      return res.status(400).json({ error: "Tous les champs sont requis" });
     }
 
     try {
       const newDepartment = new Department({ dep_name, description });
       await newDepartment.save();
-      res.status(201).json({ success: true, message: 'Département ajouté avec succès' });
+      res.status(201).json({
+        success: true,
+        message: "Département ajouté avec succès",
+        data: newDepartment,
+      });
     } catch (error) {
-      console.error('Erreur lors de l\'ajout du département:', error);
-      res.status(500).json({ error: 'Erreur interne du serveur' });
+      console.error("Erreur lors de l'ajout du département:", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+  },
+  getAllDepartements: async (req, res) => {
+    try {
+      const departments = await Department.find();
+      res.status(200).json({ success: true, departments });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des départements:", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
     }
   }
 };
+
