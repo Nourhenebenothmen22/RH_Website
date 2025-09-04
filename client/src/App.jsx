@@ -10,6 +10,7 @@ import Unauthorized from "./pages/Unauthorized";
 import AdminSummary from "./components/AdminSummary";
 import DepartementList from "./components/departemt/DepartementList";
 import AddDepartment from "./components/departemt/AddDepartement";
+import EditDepartment from "./components/EditDepartment";
 
 export default function App() {
   return (
@@ -34,6 +35,8 @@ export default function App() {
             element={<DepartementList />} // Déplacement ici
           />
           <Route path="add-department" element={<AddDepartment />} />
+          <Route path="edit-department/:id" element={<EditDepartment />} />
+
         </Route>
 
         <Route
