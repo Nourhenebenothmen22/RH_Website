@@ -1,10 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const{createEmployee,updateEmployee,deleteEmployee,getEmployeeById,getEmployees}=require('../controllers/employeeController');
-// Routes CRUD existantes
-router.post('/', createEmployee);
-router.get('/',getEmployees);
-router.get('/:id',getEmployeeById);
-router.put('/:id',updateEmployee);
-router.delete('/:id',deleteEmployee);
+const employeeController = require('../controllers/employeeController');
+
+router.post(
+  '/',
+  employeeController.upload.single('profileImage'),
+  employeeController.createEmployee
+);
+
+router.put(
+  '/:id',
+  employeeController.upload.single('profileImage'),
+  employeeController.updateEmployee
+);
+
+router.get('/', employeeController.getEmployees);
+router.get('/:id', employeeController.getEmployeeById);
+router.delete('/:id', employeeController.deleteEmployee);
+
 module.exports = router;
