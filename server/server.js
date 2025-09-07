@@ -6,7 +6,8 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const cors = require('cors'); // Ajoutez ce package
+const cors = require('cors');
+const path = require('path'); // Ajout de path pour gérer les chemins
 const connectDB = require('./config/db');
 
 // ========================
@@ -18,20 +19,24 @@ const port = process.env.PORT || 5000;
 // ========================
 // 3. Middlewares globaux
 // ========================
-app.use(cors({
-  origin: 'http://localhost:5173', // Autoriser spécifiquement votre frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
-app.use(express.json());
-app.use(morgan('dev'));
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false
-  })
-);
+ app.use(cors({
+      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true
+    }));
+    
+    app.use(express.json({ limit: '10mb' }));
+    app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    app.use(morgan('dev'));
+    app.use(helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false
+    }));
+    
+    // Servir les fichiers statiques
+    app.use('/public', express.static(path.join(__dirname, 'public')));
+
 
 // ========================
 // 4. Routes
