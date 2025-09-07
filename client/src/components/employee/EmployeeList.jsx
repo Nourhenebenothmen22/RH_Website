@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch, FaPlus } from "react-icons/fa";
 
 function EmployeeList() {
+  
   return (
     <div className="p-3 md:p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-5">
