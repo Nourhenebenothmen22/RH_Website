@@ -1,23 +1,22 @@
-const Employee = require('../models/employee')
-exports.getEmployees = async (req, res) => {
-  try {
-    const employees = await Employee.find();
-    res.status(200).json({
-      success: true,
-      data: employees,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
-}
+// controllers/employeeController.js
+const Department = require('../models/departement');
+const Employee = require('../models/employee');
+
+// Créer un employé
 exports.createEmployee = async (req, res) => {
   try {
     const newEmployee = new Employee(req.body);
     await newEmployee.save();
+
+    // Ajouter l'employé dans son département
+    if (newEmployee.department) {
+      await Department.findByIdAndUpdate(
+        newEmployee.department,
+        { $push: { employeeIds: newEmployee._id } },
+        { new: true }
+      );
+    }
+
     res.status(201).json({
       success: true,
       data: newEmployee,
@@ -29,61 +28,126 @@ exports.createEmployee = async (req, res) => {
       error: error.message,
     });
   }
-}
+};
+
+// Mettre à jour un employé
 exports.updateEmployee = async (req, res) => {
   try {
+    const employeeId = req.params.id;
+    const { department: newDepartment } = req.body;
+
+    // Ancien employé avant modif
+    const oldEmployee = await Employee.findById(employeeId);
+
     const updatedEmployee = await Employee.findByIdAndUpdate(
-      req.params.id,
-        req.body,
-        { new: true, runValidators: true }
+      employeeId,
+      req.body,
+      { new: true, runValidators: true }
     );
+
     if (!updatedEmployee) {
       return res.status(404).json({
         success: false,
         message: "Employee not found",
       });
     }
+
+    // Si changement de département → retirer de l'ancien + ajouter au nouveau
+    if (oldEmployee.department && oldEmployee.department.toString() !== newDepartment) {
+      await Department.findByIdAndUpdate(
+        oldEmployee.department,
+        { $pull: { employeeIds: employeeId } }
+      );
+    }
+
+    if (newDepartment) {
+      await Department.findByIdAndUpdate(
+        newDepartment,
+        { $addToSet: { employeeIds: employeeId } }
+      );
+    }
+
     res.status(200).json({
       success: true,
       data: updatedEmployee,
     });
-    } catch (error) {
+  } catch (error) {
     res.status(500).json({
       success: false,
       message: "Server error",
       error: error.message,
-    })}
-}
+    });
+  }
+};
+
+// Supprimer un employé
 exports.deleteEmployee = async (req, res) => {
-    try {
-        const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
-        if (!deletedEmployee) {
-        return res.status(404).json({
-            success: false,
-            message: "Employee not found",
-        });
-        }
-        res.status(200).json({
-        success: true,
-        message: "Employee deleted successfully",
-        });
-    } catch (error) {
-        res.status(500).json({
-        success: false,
-        message: "Server error",
-        error: error.message,
-        });
-    }
-    }
-exports.getEmployeeById = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employeeId = req.params.id;
+    const employee = await Employee.findById(employeeId);
+
     if (!employee) {
       return res.status(404).json({
         success: false,
         message: "Employee not found",
       });
     }
+
+    // Retirer du département
+    if (employee.department) {
+      await Department.findByIdAndUpdate(
+        employee.department,
+        { $pull: { employeeIds: employeeId } }
+      );
+    }
+
+    await Employee.findByIdAndDelete(employeeId);
+
+    res.status(200).json({
+      success: true,
+      message: "Employee deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Récupérer tous les employés
+exports.getEmployees = async (req, res) => {
+  try {
+    const employees = await Employee.find()
+      .populate("department", "dep_name description"); // ramène nom + description du département
+
+    res.status(200).json({
+      success: true,
+      data: employees,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Récupérer un employé par ID
+exports.getEmployeeById = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id)
+      .populate("department", "dep_name description");
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found",
+      });
+    }
+
     res.status(200).json({
       success: true,
       data: employee,
@@ -95,107 +159,4 @@ exports.getEmployeeById = async (req, res) => {
       error: error.message,
     });
   }
-}
-// Statistiques salariales (moyen, min, max)
-exports.getSalaryStatistics = async (req, res) => {
-  try {
-    const result = await Employee.aggregate([
-      {
-        $group: {
-          _id: null,
-          avgSalary: { $avg: "$salary" },
-          minSalary: { $min: "$salary" },
-          maxSalary: { $max: "$salary" }
-        }
-      }
-    ]);
-
-    const stats = result[0] || {
-      avgSalary: 0,
-      minSalary: 0,
-      maxSalary: 0
-    };
-    
-    res.status(200).json({
-      success: true,
-      data: {
-        averageSalary: Number(stats.avgSalary.toFixed(2)),
-        minSalary: stats.minSalary,
-        maxSalary: stats.maxSalary
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur serveur",
-      error: error.message,
-    });
-  }
 };
-
-// Nombre d'employés par statut
-exports.getEmployeesByStatus = async (req, res) => {
-  try {
-    const result = await Employee.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    // Formatage des résultats
-    const statusCount = {};
-    result.forEach(item => {
-      statusCount[item._id] = item.count;
-    });
-    
-    // Valeurs par défaut pour les statuts manquants
-    const statuses = ['active', 'on_leave', 'terminated'];
-    statuses.forEach(status => {
-      if (!statusCount[status]) statusCount[status] = 0;
-    });
-
-    res.status(200).json({
-      success: true,
-      data: statusCount
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur serveur",
-      error: error.message,
-    });
-  }
-};
-// Comptage des employés par département
-exports.countEmployeesByDepartment = async (req, res) => {
-    try {
-        const { department } = req.params;
-    
-        // Validation du département
-        const validDepartments = ['IT', 'HR', 'Finance', 'Marketing', 'Operations'];
-        if (!validDepartments.includes(department)) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid department",
-        });
-        }
-    
-        // Comptage des employés par département
-        const count = await Employee.countDocuments({ department });
-    
-        res.status(200).json({
-        success: true,
-        department,
-        count,
-        });
-    } catch (error) {
-        res.status(500).json({
-        success: false,
-        message: "Server error",
-        error: error.message,
-        });
-    }
-    }
