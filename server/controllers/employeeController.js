@@ -31,7 +31,7 @@ exports.createEmployee = async (req, res) => {
   try {
     let profileImagePath = "";
     if (req.file) {
-      profileImagePath = `/public/uploads/${req.file.filename}`;
+      profileImagePath = `/uploads/${req.file.filename}`;
     }
 
     const employeeData = {
@@ -171,8 +171,7 @@ exports.deleteEmployee = async (req, res) => {
 // Récupérer tous les employés
 exports.getEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find()
-      .populate("department", "dep_name description");
+    const employees = await Employee.find() .populate("department", "dep_name description");
 
     res.status(200).json({
       success: true,
