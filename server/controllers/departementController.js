@@ -1,6 +1,5 @@
 const Department = require("../models/departement");
 
-// Correction : utiliser ':' au lieu de '=' pour les méthodes d'objet
 module.exports = {
   addDepartement: async (req, res) => {
     const { dep_name, description } = req.body;
@@ -22,19 +21,21 @@ module.exports = {
       res.status(500).json({ error: "Erreur interne du serveur" });
     }
   },
+  
   getAllDepartements: async (req, res) => {
     try {
-      const departments = await Department.find();
+      const departments = await Department.find().populate("employeeIds");
       res.status(200).json({ success: true, departments });
     } catch (error) {
       console.error("Erreur lors de la récupération des départements:", error);
       res.status(500).json({ error: "Erreur interne du serveur" });
     }
   },
+  
   getDepartementById: async (req, res) => {
     const { id } = req.params;
     try {
-      const department = await Department.findById(id);
+      const department = await Department.findById(id).populate("employeeIds");
       if (!department) {
         return res.status(404).json({ error: "Département non trouvé" });
       }
@@ -44,7 +45,8 @@ module.exports = {
       res.status(500).json({ error: "Erreur interne du serveur" });
     }
   },
-  updatedDepartment:async(req,res)=>{
+  
+  updatedDepartment: async (req, res) => {
     const { id } = req.params;
     const { dep_name, description } = req.body;
     try {
@@ -56,14 +58,17 @@ module.exports = {
       if (!updatedDepartment) {
         return res.status(404).json({ error: "Département non trouvé" });
       }
-      res.status(200).json({ success: true, message: "Département mis à jour avec succès", data: updatedDepartment });
-      
+      res.status(200).json({ 
+        success: true, 
+        message: "Département mis à jour avec succès", 
+        data: updatedDepartment 
+      });
     } catch (error) {
       console.error("Erreur lors de la mise à jour du département:", error);
       res.status(500).json({ error: "Erreur interne du serveur" });
-      
     }
   },
+  
   deleteDepartment: async (req, res) => {
     const { id } = req.params;
     try {
@@ -71,14 +76,13 @@ module.exports = {
       if (!deletedDepartment) {
         return res.status(404).json({ error: "Département non trouvé" });
       }
-      res.status(200).json({ success: true, message: "Département supprimé avec succès" });
+      res.status(200).json({ 
+        success: true, 
+        message: "Département supprimé avec succès" 
+      });
     } catch (error) {
       console.error("Erreur lors de la suppression du département:", error);
       res.status(500).json({ error: "Erreur interne du serveur" });
-      
     }
-}
-}
-
-  
-
+  }
+};
