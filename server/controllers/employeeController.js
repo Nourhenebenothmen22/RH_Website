@@ -1,14 +1,58 @@
-// controllers/employeeController.js
 const Department = require('../models/departement');
 const Employee = require('../models/employee');
+const multer = require('multer');
+const Path = require('path');
+const fs = require('fs');
+
+// Configuration de multer
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    const uploadDir = 'public/uploads/';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + Path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  }
+});
 
 // Créer un employé
 exports.createEmployee = async (req, res) => {
   try {
-    const newEmployee = new Employee(req.body);
+    let profileImagePath = "";
+    if (req.file) {
+      profileImagePath = `/public/uploads/${req.file.filename}`;
+    }
+
+    const employeeData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      profileImage: profileImagePath,
+      employeeId: req.body.employeeId,
+      gender: req.body.gender,
+      dob: req.body.dob,
+      designation: req.body.designation,
+      department: req.body.department,
+      salary: req.body.salary,
+      maritalStatus: req.body.maritalStatus,
+      itemtype: req.body.itemtype || 'Employee'
+    };
+
+    const newEmployee = new Employee(employeeData);
     await newEmployee.save();
 
-    // Ajouter l'employé dans son département
+    // Lier l'employé à son département
     if (newEmployee.department) {
       await Department.findByIdAndUpdate(
         newEmployee.department,
@@ -17,9 +61,13 @@ exports.createEmployee = async (req, res) => {
       );
     }
 
+    const employeeResponse = newEmployee.toObject();
+    delete employeeResponse.password;
+
     res.status(201).json({
       success: true,
-      data: newEmployee,
+      message: "Employee created successfully",
+      data: employeeResponse,
     });
   } catch (error) {
     res.status(500).json({
@@ -36,7 +84,11 @@ exports.updateEmployee = async (req, res) => {
     const employeeId = req.params.id;
     const { department: newDepartment } = req.body;
 
-    // Ancien employé avant modif
+    // Si un fichier est uploadé, ajouter son chemin aux données
+    if (req.file) {
+      req.body.profileImage = `/public/uploads/${req.file.filename}`;
+    }
+
     const oldEmployee = await Employee.findById(employeeId);
 
     const updatedEmployee = await Employee.findByIdAndUpdate(
@@ -120,7 +172,7 @@ exports.deleteEmployee = async (req, res) => {
 exports.getEmployees = async (req, res) => {
   try {
     const employees = await Employee.find()
-      .populate("department", "dep_name description"); // ramène nom + description du département
+      .populate("department", "dep_name description");
 
     res.status(200).json({
       success: true,
@@ -160,3 +212,5 @@ exports.getEmployeeById = async (req, res) => {
     });
   }
 };
+
+exports.upload=upload
