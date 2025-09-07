@@ -1,26 +1,15 @@
-const User = require('../models/user');
-const mongoose = require('mongoose');
+const { Schema } = require("mongoose");
+const User = require("./user"); // ton modèle User
 
-const employeeSchema = new mongoose.Schema({
-  hireDate: { type: Date, default: Date.now },
+const employeeSchema = new Schema({
+  employeeId: { type: String, required: true, unique: true },
+  gender: { type: String },
+  dob: { type: Date },
+  designation: { type: String },
+  department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
   salary: { type: Number, min: 0 },
-  status: {
-    type: String,
-    enum: ['active', 'on_leave', 'terminated'],
-    default: 'active'
-  },
-  // Ajout du champ department
-department: {
-  type: String,
-  required: true,
-  enum: [
-    'IT', 'HR', 'Finance', 'Marketing', 'Operations',
-    'Sales', 'Customer Support', 'R&D', 'Legal', 
-    'Procurement', 'Administration', 'Quality Assurance',
-    'Logistics', 'Facilities'
-  ]
-}
+  maritalStatus: { type: String }
 });
 
-User.discriminator('Employee', employeeSchema);
-module.exports = mongoose.model('Employee');
+const Employee = User.discriminator("Employee", employeeSchema);
+module.exports = Employee;
