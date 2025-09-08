@@ -34,8 +34,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// Servir les fichiers statiques - CORRECTION ICI
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/public/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // ========================
 // 4. Routes
