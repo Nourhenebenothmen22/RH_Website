@@ -11,7 +11,7 @@ const employeeSchema = new Schema({
   salaries: [{ type: Schema.Types.ObjectId, ref: "Salary" }],
   salary: { type: Number, min: 0 }, // Bien replacé à l’intérieur
   maritalStatus: { type: String }
-}, { timestamps: true });
+});
 
 const Employee = User.discriminator("Employee", employeeSchema);
 module.exports = Employee;
