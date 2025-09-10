@@ -57,7 +57,6 @@ exports.getSalaryById = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-const Salary = require("../models/salary");
 
 exports.updateSalary = async (req, res) => {
   try {
