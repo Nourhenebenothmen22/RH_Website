@@ -1,5 +1,5 @@
 const { Schema } = require("mongoose");
-const User = require("./user"); // ton modèle User
+const User = require("./user"); // your User model
 
 const employeeSchema = new Schema({
   employeeId: { type: String, required: true, unique: true },
@@ -7,9 +7,9 @@ const employeeSchema = new Schema({
   dob: { type: Date },
   designation: { type: String },
   department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
-  // Référence aux salaires
+  // Reference to salaries
   salaries: [{ type: Schema.Types.ObjectId, ref: "Salary" }],
-  salary: { type: Number, min: 0 }, // Bien replacé à l’intérieur
+  salary: { type: Number, min: 0 },
   maritalStatus: { type: String }
 });
 
