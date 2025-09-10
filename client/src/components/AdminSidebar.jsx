@@ -75,7 +75,7 @@ function AdminSidebar() {
         </NavLink>
         
         <NavLink 
-          to="/admin-dashboard/payroll" 
+          to="/admin-dashboard/Salary" 
           className={({ isActive }) => 
             `flex items-center p-3 my-1 rounded-lg transition-all duration-300
             ${isActive 
