@@ -7,9 +7,11 @@ const employeeSchema = new Schema({
   dob: { type: Date },
   designation: { type: String },
   department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
-  salary: { type: Number, min: 0 },
+  // Référence aux salaires
+  salaries: [{ type: Schema.Types.ObjectId, ref: "Salary" }],
+  salary: { type: Number, min: 0 }, // Bien replacé à l’intérieur
   maritalStatus: { type: String }
-});
+}, { timestamps: true });
 
 const Employee = User.discriminator("Employee", employeeSchema);
 module.exports = Employee;
