@@ -15,6 +15,8 @@ import EmployeeList from "./components/employee/employeeList";
 import EmployeeAdd from "./components/Employee/EmployeeAdd";
 import EditEmployee from "./components/Employee/EditEmployee";
 import ViewEmployee from "./components/Employee/ViewEmployee";
+import EmployeeSalary from "./components/Salary/EmployeeSalary";
+import Salary from "./components/Salary/Salary";
 
 export default function App() {
   return (
@@ -44,6 +46,13 @@ export default function App() {
           <Route path="/admin-dashboard/add-employee" element={<EmployeeAdd />} />
           <Route path="/admin-dashboard/edit-employee/:id" element={<EditEmployee />} />
           <Route path="/admin-dashboard/view-employee/:id" element={<ViewEmployee/>} />
+          <Route path="/admin-dashboard/employee-salary/:id" element={<EmployeeSalary/>} />
+          <Route path="/admin-dashboard/Salary" element={<Salary/>} />
+
+
+          
+
+          
 
 
 
