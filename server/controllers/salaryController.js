@@ -109,3 +109,14 @@ exports.deleteSalary = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+exports.getSalariesByEmployeeId = async (req, res) => {
+  try {
+    const { id } = req.params; // ID de l'employé
+    const salaries = await Salary.find({ employee: id }).populate("employee").populate("department");
+    res.status(200).json({ success: true, data: salaries });
+  }
+  catch (error) {
+    console.error("Error while fetching salaries by employee ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
