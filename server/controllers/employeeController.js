@@ -211,5 +211,27 @@ exports.getEmployeeById = async (req, res) => {
     });
   }
 };
-
+exports.getEmployeeByDepartmentId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("Fetching employees for department:", id);
+    
+    const employees = await Employee.find({ department: id })
+      .populate("department", "dep_name description");
+    
+    console.log("Found employees:", employees);
+    
+    res.status(200).json({
+      success: true,
+      data: employees,
+    });
+  } catch (error) {
+    console.error("Error in getEmployeeByDepartmentId:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 exports.upload=upload
