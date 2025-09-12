@@ -49,6 +49,9 @@ const departmentRouter = require('./routes/departement');
 app.use('/api/department', departmentRouter);
 const salaryRouter = require('./routes/salary');
 app.use('/api/salary', salaryRouter);
+const dashboardRouter = require('./routes/dashboard');
+app.use('/api/dashboard', dashboardRouter);
+
 
 
 // ========================
