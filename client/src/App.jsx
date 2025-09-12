@@ -21,6 +21,7 @@ import EmployeeProfile from "./EmployeeDashboard/EmployeeProfile";
 import EmployeeLeaves from "./EmployeeDashboard/EmployeeLeaves";
 import EmployeeSettings from "./EmployeeDashboard/EmployeeSettings";
 import EmployeeSalary from "./EmployeeDashboard/EmployeeSalary";
+import Employee from "./EmployeeDashboard/Employee";
 
 
 export default function App() {
@@ -63,7 +64,7 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<EmployeeProfile />} />
+          <Route index element={<Employee />} />
           <Route path="profile" element={<EmployeeProfile />} />
           <Route path="leaves" element={<EmployeeLeaves/>} />
           <Route path="salary" element={<EmployeeSalary/>} />
