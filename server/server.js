@@ -53,6 +53,8 @@ const dashboardRouter = require('./routes/dashboard');
 app.use('/api/dashboard', dashboardRouter);
 const projectRouter=require('./routes/project');
 app.use('/api/project',projectRouter);
+const attendanceRouter=require('./routes/attendance');
+app.use('/api/attendance',attendanceRouter);
 
 
 
