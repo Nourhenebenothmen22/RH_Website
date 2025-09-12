@@ -15,8 +15,13 @@ import EmployeeList from "./components/employee/employeeList";
 import EmployeeAdd from "./components/Employee/EmployeeAdd";
 import EditEmployee from "./components/Employee/EditEmployee";
 import ViewEmployee from "./components/Employee/ViewEmployee";
-import EmployeeSalary from "./components/Salary/EmployeeSalary";
 import Salary from "./components/Salary/Salary";
+import Leave from "./components/leave/Leave";
+import EmployeeProfile from "./EmployeeDashboard/EmployeeProfile";
+import EmployeeLeaves from "./EmployeeDashboard/EmployeeLeaves";
+import EmployeeSettings from "./EmployeeDashboard/EmployeeSettings";
+import EmployeeSalary from "./EmployeeDashboard/EmployeeSalary";
+
 
 export default function App() {
   return (
@@ -27,6 +32,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
+        {/* Admin Dashboard Routes */}
         <Route
           path="/admin-dashboard"
           element={
@@ -36,30 +42,19 @@ export default function App() {
           }
         >
           <Route index element={<AdminSummary />} />
-          <Route
-            path="departements"
-            element={<DepartementList />} // Déplacement ici
-          />
+          <Route path="departements" element={<DepartementList />} />
           <Route path="add-department" element={<AddDepartment />} />
           <Route path="edit-department/:id" element={<EditDepartment />} />
-          <Route path="/admin-dashboard/employees" element={<EmployeeList />} />
-          <Route path="/admin-dashboard/add-employee" element={<EmployeeAdd />} />
-          <Route path="/admin-dashboard/edit-employee/:id" element={<EditEmployee />} />
-          <Route path="/admin-dashboard/view-employee/:id" element={<ViewEmployee/>} />
-          <Route path="/admin-dashboard/employee-salary/:id" element={<EmployeeSalary/>} />
-          <Route path="/admin-dashboard/Salary" element={<Salary/>} />
-
-
-          
-
-          
-
-
-
-
-
+          <Route path="employees" element={<EmployeeList />} />
+          <Route path="add-employee" element={<EmployeeAdd />} />
+          <Route path="edit-employee/:id" element={<EditEmployee />} />
+          <Route path="view-employee/:id" element={<ViewEmployee/>} />
+          <Route path="employee-salary/:id" element={<EmployeeSalary/>} />
+          <Route path="salary" element={<Salary/>} />
+          <Route path="leave" element={<Leave/>} />
         </Route>
 
+        {/* Employee Dashboard Routes */}
         <Route
           path="/employee-dashboard"
           element={
@@ -67,7 +62,13 @@ export default function App() {
               <EmployeeDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<EmployeeProfile />} />
+          <Route path="profile" element={<EmployeeProfile />} />
+          <Route path="leaves" element={<EmployeeLeaves/>} />
+          <Route path="salary" element={<EmployeeSalary/>} />
+          <Route path="settings" element={<EmployeeSettings />} />
+        </Route>
 
         <Route
           path="/default-dashboard"
