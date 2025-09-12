@@ -6,7 +6,7 @@ const employeeSchema = new Schema({
   gender: { type: String },
   dob: { type: Date },
   designation: { type: String },
-  department: { type: Schema.Types.ObjectId, ref: "Department", required: true },
+  department: { type: Schema.Types.ObjectId, ref: "Department"},
   // Reference to salaries
   salaries: [{ type: Schema.Types.ObjectId, ref: "Salary" }],
   salary: { type: Number, min: 0 },
