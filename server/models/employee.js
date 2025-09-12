@@ -9,6 +9,7 @@ const employeeSchema = new Schema({
   department: { type: Schema.Types.ObjectId, ref: "Department"},
   // Reference to salaries
   salaries: [{ type: Schema.Types.ObjectId, ref: "Salary" }],
+  projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
   salary: { type: Number, min: 0 },
   maritalStatus: { type: String }
 });
