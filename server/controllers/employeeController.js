@@ -190,7 +190,11 @@ exports.getEmployees = async (req, res) => {
 exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id)
-      .populate("department", "dep_name description");
+      .populate("department", "dep_name description")
+      .populate("salaries")
+      .populate("projects")
+      .populate("attendances");
+
 
     if (!employee) {
       return res.status(404).json({
