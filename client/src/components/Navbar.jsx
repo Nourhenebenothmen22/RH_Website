@@ -45,14 +45,14 @@ function Navbar() {
               </div>
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-gray-700 group-hover:text-blue-600">{user?.name || 'Admin'}</p>
-                <p className="text-xs text-gray-500">Administrateur</p>
+                <p className="text-xs text-gray-500">{user?.itemtype}</p>
               </div>
             </button>
             
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100">
                 <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium">{user?.name || 'Admin'}</p>
+                  <p className="text-sm font-medium">{user?.name || 'Admin'||'employee'}</p>
                   <p className="text-xs text-gray-500 truncate">{user?.email || 'admin@example.com'}</p>
                 </div>
                 <div className="py-1">
