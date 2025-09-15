@@ -38,7 +38,7 @@ exports.recordAttendance = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-getAttendanceByEmployee = async (req, res) => {
+exports.getAttendanceByEmployee = async (req, res) => {
     try {
         const { employeeId } = req.params;
         const attendanceRecords = await Attendance.find({ employee: employeeId }).populate('employee', 'name email');
@@ -48,7 +48,7 @@ getAttendanceByEmployee = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
-deleteAttendance = async (req, res) => {
+exports.deleteAttendance = async (req, res) => {
     try {
         const { id } = req.params;
         const attendanceRecord = await Attendance.findByIdAndDelete(id);
