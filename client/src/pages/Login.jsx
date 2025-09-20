@@ -3,13 +3,13 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext"; // Correction ici
 
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-   const location = useLocation();
-  const error = location.state?.error; // Récupération de l'erreur
+  const location = useLocation();
+  const error = location.state?.error;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,8 @@ function Login() {
         itemtype: user.itemtype,
         name: user.name,
         email: user.email,
-        id: user.id || user._id
+        id: user.id || user._id,
+        profileImage: user.profileImage || ''
       });
       
       // Afficher le toast de succès
