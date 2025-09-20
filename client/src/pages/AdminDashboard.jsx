@@ -1,9 +1,9 @@
 import React from 'react'
-import { useAuth } from '../hooks/useAuth'
 import AdminSidebar from '../components/AdminSidebar'
 import AdminSummary from '../components/AdminSummary'
 import Navbar from '../components/Navbar'
 import { Outlet } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function AdminDashboard() {
   const { user } = useAuth()
