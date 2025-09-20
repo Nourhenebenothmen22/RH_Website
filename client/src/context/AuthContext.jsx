@@ -1,11 +1,20 @@
 // src/context/AuthContext.jsx
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import axios from 'axios';
 
-// Exportez le contexte comme propriété du Provider
-const AuthContext = createContext();
+// Créez et exportez le contexte
+export const AuthContext = createContext();
 
-export default function AuthProvider({ children }) {
+// Hook personnalisé pour utiliser le contexte
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export const AuthProvider =({ children })=>{
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -13,7 +22,9 @@ export default function AuthProvider({ children }) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userItemType');
     localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail'); // Ajouté pour cohérence
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userProfileImage');
     setUser(null);
   }, []);
 
@@ -22,6 +33,8 @@ export default function AuthProvider({ children }) {
       const token = localStorage.getItem('authToken');
       const itemtype = localStorage.getItem('userItemType');
       const name = localStorage.getItem('userName');
+      const userId = localStorage.getItem('userId');
+      const profileImage = localStorage.getItem('userProfileImage');
       
       if (token && itemtype && name) {
         try {
@@ -40,7 +53,8 @@ export default function AuthProvider({ children }) {
             itemtype: response.data.user.itemtype,
             name: response.data.user.name,
             email: response.data.user.email,
-            id: response.data.user.id
+            id: response.data.user.id || userId,
+            profileImage: response.data.user.profileImage || profileImage
           });
         } catch (error) {
           console.error("Token verification failed:", error);
@@ -58,6 +72,8 @@ export default function AuthProvider({ children }) {
     localStorage.setItem('userItemType', userData.itemtype);
     localStorage.setItem('userName', userData.name);
     localStorage.setItem('userEmail', userData.email);
+    localStorage.setItem('userId', userData.id);
+    localStorage.setItem('userProfileImage', userData.profileImage || '');
     
     setUser({
       token,
@@ -69,22 +85,19 @@ export default function AuthProvider({ children }) {
   const isAdmin = () => user?.itemtype?.toLowerCase() === 'admin';
   const isEmployee = () => user?.itemtype?.toLowerCase() === 'employee';
 
+  const value = {
+    user,
+    isLoading,
+    login,
+    logout,
+    isAuthenticated,
+    isAdmin,
+    isEmployee
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        logout,
-        isAuthenticated,
-        isAdmin,
-        isEmployee
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
-
-// Exportez le contexte séparément
-export { AuthContext };
