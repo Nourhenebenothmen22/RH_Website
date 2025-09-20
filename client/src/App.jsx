@@ -13,7 +13,7 @@ import AdminSummary from "./components/AdminSummary";
 import DepartementList from "./components/departemt/DepartementList";
 import AddDepartment from "./components/departemt/AddDepartement";
 import EditDepartment from "./components/EditDepartment";
-import EmployeeList from "./components/employee/employeeList";
+import EmployeeList from "./components/Employee/EmployeeList";
 import EmployeeAdd from "./components/Employee/EmployeeAdd";
 import EditEmployee from "./components/Employee/EditEmployee";
 import ViewEmployee from "./components/Employee/ViewEmployee";
@@ -45,7 +45,7 @@ export default function App() {
             <Route path="departements" element={<DepartementList />} />
             <Route path="add-department" element={<AddDepartment />} />
             <Route path="edit-department/:id" element={<EditDepartment />} />
-            <Route path="employees" element={<EmployeeList />} />
+            <Route path="employees" element={<EmployeeList/>} />
             <Route path="add-employee" element={<EmployeeAdd />} />
             <Route path="edit-employee/:id" element={<EditEmployee />} />
             <Route path="view-employee/:id" element={<ViewEmployee/>} />
