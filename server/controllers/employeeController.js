@@ -171,7 +171,9 @@ exports.deleteEmployee = async (req, res) => {
 // Récupérer tous les employés
 exports.getEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find() .populate("department", "dep_name description");
+    const employees = await Employee.find() .populate("department", "dep_name description") .populate("salaries")
+      .populate("projects")
+      .populate("attendances");
 
     res.status(200).json({
       success: true,
@@ -187,27 +189,32 @@ exports.getEmployees = async (req, res) => {
 };
 
 // Récupérer un employé par ID
-exports.getEmployeeById = async (req, res) => {
+exports.getEmployeeByUserId = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id)
+    const { id } = req.params;
+    console.log("🔍 Recherche de l'employé avec user ID:", id);
+    
+    const employee = await Employee.findOne({ _id: id })
       .populate("department", "dep_name description")
       .populate("salaries")
       .populate("projects")
       .populate("attendances");
 
-
     if (!employee) {
+      console.log("❌ Aucun employé trouvé avec user ID:", id);
       return res.status(404).json({
         success: false,
         message: "Employee not found",
       });
     }
 
+    console.log("✅ Employé trouvé:", employee.name);
     res.status(200).json({
       success: true,
       data: employee,
     });
   } catch (error) {
+    console.error("❌ Erreur dans getEmployeeByUserId:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -215,6 +222,7 @@ exports.getEmployeeById = async (req, res) => {
     });
   }
 };
+
 exports.getEmployeeByDepartmentId = async (req, res) => {
   try {
     const { id } = req.params;
