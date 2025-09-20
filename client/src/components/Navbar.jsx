@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 function Navbar() {
