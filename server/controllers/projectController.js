@@ -8,18 +8,18 @@ const Project = require("../models/Project");
  */
 exports.assignProject = async (req, res) => {
     try {
-        const { name, description } = req.body;
-        if (!name || !description) {
+        const { name, description, employee } = req.body; // Destructurer employee
+        if (!name || !description || !employee) { // Vérifier aussi employee
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        // Create a new project
-        const project = new Project({ name, description });
+        // Créer le projet avec l'employee
+        const project = new Project({ name, description, employee }); // Ajouter employee
         await project.save();
 
-        // Add project reference to the employee's projects array
+        // Mettre à jour l'employé
         await Employee.findByIdAndUpdate(
-            req.body.employee,
+            employee, // Utiliser la variable employee
             { $push: { projects: project._id } }
         );
 
