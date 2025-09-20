@@ -16,7 +16,7 @@ router.put(
 
 router.get('/', employeeController.getEmployees);
 router.get('/department/:id', employeeController.getEmployeeByDepartmentId); // placé avant
-router.get('/:id', employeeController.getEmployeeById);
+router.get('/:id', employeeController.getEmployeeByUserId);
 router.delete('/:id', employeeController.deleteEmployee);
 
 module.exports = router;
