@@ -1,21 +1,41 @@
 const Employee = require('../models/employee');
 const Department = require('../models/departement');
 const Salary = require('../models/salary');
+const Attendance = require('../models/Attendance');
 
-// @desc    Get dashboard summary
+// @desc    Get dashboard summary (general)
 // @route   GET /api/dashboard/summary
 // @access  Private (Admin only)
 const getDashboardSummary = async (req, res) => {
   try {
-    // 1. Get total employees count
+    // 1. Total employees
     const totalEmployees = await Employee.countDocuments();
 
-    // 2. Get total departments count
+    // 2. Total departments
     const totalDepartments = await Department.countDocuments();
 
+    // 3. Attendance summary (all records)
+    const attendanceSummary = await Attendance.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
 
+    // Initialiser tous les statuts à 0
+    const attendanceCounts = {
+      present: 0,
+      absent: 0,
+      late: 0,
+      onLeave: 0
+    };
+    attendanceSummary.forEach(item => {
+      attendanceCounts[item._id] = item.count;
+    });
 
-    // 4. Calculate total payroll (current month)
+    // 4. Total payroll (current month)
     const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
@@ -41,6 +61,7 @@ const getDashboardSummary = async (req, res) => {
       totalEmployees,
       totalDepartments,
       totalPayroll,
+      attendance: attendanceCounts
     };
 
     res.status(200).json({
