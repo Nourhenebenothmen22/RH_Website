@@ -25,9 +25,25 @@ export const AuthProvider =({ children })=>{
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userId');
     localStorage.removeItem('userProfileImage');
+    clearAllCookies();
+    localStorage.clear();
     setUser(null);
   }, []);
+  
 
+const clearAllCookies  = () =>{
+
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+  }
+
+}
+
+clearAllCookies();
   useEffect(() => {
     const verifyToken = async () => {
       const token = localStorage.getItem('authToken');

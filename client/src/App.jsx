@@ -24,7 +24,7 @@ import Salary from "./components/Salary/Salary";
 
 export default function App() {
   return (
-    <AuthProvider> {/* Ajoutez le AuthProvider ici */}
+    <AuthProvider> 
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
